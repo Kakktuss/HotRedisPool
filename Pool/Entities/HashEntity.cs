@@ -14,10 +14,21 @@ namespace Redis.Entities
             CreatedAt = DateTime.UtcNow;
 
             Data = data;
+
+            UpdatedAt = DateTime.UtcNow;
         }
         
         public DateTime CreatedAt { get; set; }
         
-        public object Data { get; }
+        public T Data { get; private set; }
+
+        public DateTime UpdatedAt { get; private set; }
+        
+        public void SetData(T data)
+        {
+            Data = data;
+            
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

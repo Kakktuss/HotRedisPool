@@ -46,11 +46,6 @@ namespace Redis
             {
                 foreach ((var clientType, var clientConfigurationOptions) in clientTypes)
                 {
-                    if (clientType.GetInterfaces().Any(e => e.IsGenericType))
-                    {
-                        
-                    }
-                    
                     if (!_clientsPool.ContainsKey(clientType.Name))
                     {
                         _clientsPool.Add(clientType.Name, new Lazy<object>(() => _buildRedisClient(databaseName, clientType)));

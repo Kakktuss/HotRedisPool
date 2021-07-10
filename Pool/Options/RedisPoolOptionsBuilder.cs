@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using Redis.Client;
@@ -22,9 +23,16 @@ namespace Redis
 
         public RedisPoolOptionsBuilder Bind<T>()
         {
-            if (!_typesToBind.ContainsKey(typeof(T).Name))
+            var typeName = typeof(T).Name;
+            
+            if (typeof(T).GetInterfaces().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                _typesToBind.Add(typeof(T).Name, typeof(T));
+                typeName = typeof(T).GetGenericArguments()[0].Name;
+            }
+            
+            if (!_typesToBind.ContainsKey(typeName))
+            {
+                _typesToBind.Add(typeName, typeof(T));
             }
             
             return this;

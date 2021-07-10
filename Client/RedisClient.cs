@@ -61,6 +61,19 @@ namespace Redis.Client
             var hashEntries = new HashEntry[]
             {
                 new HashEntry("createdAt", hashEntity.CreatedAt.ToString(CultureInfo.InvariantCulture)),
+                new HashEntry("updatedAt", hashEntity.UpdatedAt.ToString(CultureInfo.InvariantCulture)),
+                new HashEntry("data", JsonSerializer.Serialize(hashEntity.Data))
+            };
+            
+            return _database.HashSetAsync(keyName, hashEntries);
+        }
+
+        public Task UpdateHashKey(string keyName, HashEntity<T> hashEntity)
+        {
+            var hashEntries = new HashEntry[]
+            {
+                new HashEntry("createdAt", hashEntity.CreatedAt.ToString(CultureInfo.InvariantCulture)),
+                new HashEntry("updatedAt", hashEntity.UpdatedAt.ToString(CultureInfo.InvariantCulture)),
                 new HashEntry("data", JsonSerializer.Serialize(hashEntity.Data))
             };
             
