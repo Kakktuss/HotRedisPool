@@ -4,7 +4,7 @@
         <TargetFramework>net5.0</TargetFramework>
         <PackageId>HotRedisPool</PackageId>
         <Description>HotRedisPool is an extension package over StackExchange.Redis package to support pooling and entity-level client configuration</Description>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RootNamespace>Redis</RootNamespace>
     </PropertyGroup>
