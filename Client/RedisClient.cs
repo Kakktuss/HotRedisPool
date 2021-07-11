@@ -37,9 +37,9 @@ namespace Redis.Client
             return JsonSerializer.Deserialize<T>(valueString);
         }
 
-        public Task SaveStringKey(string keyName, T value)
+        public Task SaveStringKey(string keyName, T value, TimeSpan expireAt)
         {
-            return _database.StringSetAsync(keyName, JsonSerializer.Serialize(value));
+            return _database.StringSetAsync(keyName, JsonSerializer.Serialize(value), expireAt);
         }
 
         public async Task<HashEntity<T>> GetHashKey(string keyName)
@@ -54,7 +54,7 @@ namespace Redis.Client
             return hashEntity;
         }
         
-        public Task SaveHashKey(string keyName, T value)
+        public async Task SaveHashKey(string keyName, T value, TimeSpan expireAt)
         {
             var hashEntity = new HashEntity(value);
         
@@ -64,8 +64,10 @@ namespace Redis.Client
                 new HashEntry("updatedAt", hashEntity.UpdatedAt.ToString(CultureInfo.InvariantCulture)),
                 new HashEntry("data", JsonSerializer.Serialize(hashEntity.Data))
             };
-            
-            return _database.HashSetAsync(keyName, hashEntries);
+
+            await _database.HashSetAsync(keyName, hashEntries);
+
+            await _database.KeyExpireAsync(keyName, expireAt);
         }
 
         public Task UpdateHashKey(string keyName, HashEntity<T> hashEntity)
@@ -78,6 +80,16 @@ namespace Redis.Client
             };
             
             return _database.HashSetAsync(keyName, hashEntries);
+        }
+
+        public Task<bool> CheckKeyExists(string keyName)
+        {
+            return _database.KeyExistsAsync(keyName);
+        }
+
+        public Task<bool> CheckKeyHashFieldExists(string keyName, string fieldName)
+        {
+            return _database.HashExistsAsync(keyName, fieldName);
         }
     }
 }
